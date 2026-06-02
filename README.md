@@ -22,12 +22,12 @@ A self-contained set of Jupyter notebooks covering astronomy, astrophysics, and 
 
 ## 1. Who is this for?
 
-These tutorials target **bachelor-level interns (L3 / Licence 3)** at UGA doing a research internship at the Institut de Planétologie et d'Astrophysique de Grenoble (IPAG) or a related laboratory. They are also appropriate for first-year master students encountering observational astronomy for the first time.
+These tutorials target **bachelor-level interns** at UGA doing a research internship in astrophysics or cosmology. They are also appropriate for students encountering observational astronomy/cosmology for the first time.
 
 The notebooks assume you are comfortable with:
 - Python 3 (basic syntax, functions, loops)
 - NumPy arrays and matplotlib plots
-- University-level mechanics, thermodynamics, and electromagnetism
+- Physics: mechanics, thermodynamics, and electromagnetism
 
 No prior astronomy knowledge is required. Each notebook starts from first principles and provides relevant physical background before the coding exercises.
 

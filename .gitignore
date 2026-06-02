@@ -1,0 +1,20 @@
+# Generated output from notebook runs
+*.pdf
+*.png
+*.svg
+format_examples/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Data files (too large for git)
+*.fits
+*.hdf5
+*.h5
+*.csv
+*.ecsv
+*.xml
+*.vot
+
+# Jupyter runtime
+.jupyter/
