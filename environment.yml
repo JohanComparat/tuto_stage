@@ -1,0 +1,42 @@
+name: tuto_stage
+
+# Use conda-forge exclusively.
+# Mixing conda-forge and defaults causes solver conflicts.
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.11
+
+  # ── Core scientific stack ─────────────────────────────────────────────────
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+
+  # ── Astronomy ─────────────────────────────────────────────────────────────
+  - astropy>=6.0      # tables, units, coordinates, FITS, cosmology
+  - astroquery        # online queries: Gaia, SDSS, NED, VizieR, SIMBAD
+  - healpy            # HEALPix pixelisation of the sphere
+  - specutils         # read and analyse spectra (N05)
+  - photutils         # aperture photometry utilities (N03, N08)
+
+  # ── File formats ──────────────────────────────────────────────────────────
+  - h5py              # HDF5 read/write (N01)
+
+  # ── Statistics & fitting ──────────────────────────────────────────────────
+  - scikit-learn      # clustering, PCA, photo-z (N14)
+  - emcee             # MCMC ensemble sampler
+  - corner            # corner plots for MCMC posteriors
+
+  # ── Large-scale structure ─────────────────────────────────────────────────
+  # Corrfunc is pre-compiled on conda-forge; no local C compiler required.
+  - Corrfunc          # fast pair-count 2-point correlation functions (N12)
+
+  # ── Jupyter ───────────────────────────────────────────────────────────────
+  - jupyterlab>=4.0
+  - jupyter           # also installs classic notebook interface
+  - ipykernel         # register this env as a Jupyter kernel
+  - ipywidgets        # interactive widgets
+  - ipympl            # %matplotlib widget backend for zoomable plots
+  - tqdm              # progress bars
