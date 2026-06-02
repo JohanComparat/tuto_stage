@@ -62,7 +62,7 @@ You need to be able to read and modify Python code. If you are new to scientific
 
 ### 3.1 Install Miniforge (once per machine)
 
-[Miniforge](https://github.com/conda-forge/miniforge) is the recommended conda distribution. It ships with `mamba`, a fast drop-in replacement for `conda`. On the lab machines, Miniforge is already installed at `/home/comparat/miniforge3` and the environments live under `/home/comparat/mamba/envs/`.
+[Miniforge](https://github.com/conda-forge/miniforge) is the recommended conda distribution. It ships with `mamba`, a fast drop-in replacement for `conda`. On the lab machines, Miniforge may be already installed at `$HOME/miniforge3` and the environments live under `$HOME/mamba/envs/`.
 
 If you are setting up a new machine:
 
@@ -83,32 +83,15 @@ Verify the installation:
 mamba --version   # should print 2.x.x
 ```
 
-### 3.2 Existing environments on the lab machines
+### 3.2 Create the environment
 
-The supervisor's research environments are already available. Do **not** modify them.
-
-| Environment | Purpose |
-|-------------|---------|
-| `sum_stat` | Galaxy stellar mass function and summary statistics (N01, N02, N09) |
-| `hod_mod` | Halo Occupation Distribution model (N11) |
-| `gga_model` | Galaxy/gas/AGN X-ray model + JAX (N13) |
-| `jax-cpu` | JAX CPU-only environment |
-
-To list all available environments:
-
-```bash
-mamba env list
-```
-
-### 3.3 Create the tutorial environment (for Modules 0–2 and new notebooks)
-
-From the root of this repository, create a self-contained environment for Modules 0–2 and all proposed new notebooks (N03–N15):
+From the root of this repository:
 
 ```bash
 mamba env create -f environment.yml
 ```
 
-This installs Python 3.11 and all required packages (astropy, healpy, scipy, specutils, astroquery, …). It takes a few minutes the first time.
+This installs Python 3.11 and all required packages — `astropy`, `healpy`, `jax`, `pyccl`, `camb`, `Corrfunc`, `pymaster`, and more. It pulls everything from conda-forge plus a handful of pip-only packages. Expect 5–10 minutes on a first install.
 
 Activate the environment **every time** you open a new terminal:
 
@@ -122,31 +105,38 @@ Deactivate when you are done:
 mamba deactivate
 ```
 
-### 3.4 Which environment to use for each notebook
+### 3.3 Post-install steps
 
-| Notebook | Environment | Notes |
-|----------|-------------|-------|
-| N01 `file_formats_formats` | `sum_stat` or `tuto_stage` | — |
-| N02 `astronomical_coordinates` | `sum_stat` or `tuto_stage` | — |
-| N04 `stellar_luminosity_mass` | `tuto_stage` | needs `astroquery` |
-| N09 `stellar_mass_function` | `sum_stat` | needs `sum_stat` package |
-| N11 `angular_power_spectrum` | `hod_mod` + `sum_stat` | needs both; see note below |
-| N13 `xray-galaxy-cross-correlation` | `gga_model` | needs JAX + `gga_model` |
-| All proposed new notebooks | `tuto_stage` | — |
+After `mamba env create`, two extra steps are needed.
 
-> **Note for N11:** the notebook requires both `sum_stat` and `hod_mod`, which live in separate environments. A combined environment can be created by the supervisor on request.
-
-### 3.5 Launch Jupyter
+**Step A — pymaster (NaMaster).** The `pymaster` wheel must be compiled from source. The C libraries it needs (`cfitsio`, `fftw`, `gsl`) are already installed by the conda step above; you just need to pass their location to the build:
 
 ```bash
-mamba activate tuto_stage       # or the appropriate environment
+mamba activate tuto_stage
+LDFLAGS="-L$CONDA_PREFIX/lib" CFLAGS="-I$CONDA_PREFIX/include" pip install pymaster
+```
+
+**Step B — local research packages.** Three packages are not on PyPI and must be installed from source. Ask your supervisor for the paths.
+
+```bash
+pip install -e /path/to/sum_stat    # summary statistics: 1/Vmax, SWML, C⁻ estimators
+pip install -e /path/to/hod_mod     # Halo Occupation Distribution model + Limber integral
+pip install -e /path/to/gga_model   # galaxy/gas/AGN X-ray model
+```
+
+All tutorial notebooks (N01–N08, N10, N12, N14, N15) run without the local packages.
+
+### 3.4 Launch Jupyter
+
+```bash
+mamba activate tuto_stage
 cd /path/to/tuto_stage
 jupyter lab
 ```
 
 Your browser will open automatically. Navigate to the `notebooks/` folder and open any notebook.
 
-### 3.6 Register a kernel so JupyterLab sees your environment
+### 3.5 Register a kernel so JupyterLab sees the environment
 
 If JupyterLab opens but the kernel is not found, register it explicitly:
 
@@ -157,7 +147,7 @@ python -m ipykernel install --user --name tuto_stage --display-name "Python (tut
 
 Then restart Jupyter and select **Python (tuto_stage)** from the kernel menu.
 
-### 3.7 Update the environment
+### 3.6 Update the environment
 
 If new packages are added to `environment.yml`:
 
@@ -165,10 +155,11 @@ If new packages are added to `environment.yml`:
 mamba env update -f environment.yml --prune
 ```
 
-### 3.8 Remove the environment
+### 3.7 Remove and reinstall from scratch
 
 ```bash
 mamba env remove -n tuto_stage
+mamba env create -f environment.yml
 ```
 
 ---
@@ -187,26 +178,26 @@ tuto_stage/
 │   │
 │   │── Module 1: Stars
 │   ├── stellar_luminosity_mass.ipynb
-│   ├── blackbody_stellar_colors.ipynb          [proposed]
+│   ├── blackbody_stellar_colors.ipynb
 │   │
 │   │── Module 2: Galaxies
-│   ├── galaxy_spectra_redshift.ipynb           [proposed]
-│   ├── hubble_law.ipynb                        [proposed]
-│   ├── galaxy_rotation_curves.ipynb            [proposed]
-│   ├── galaxy_color_magnitude.ipynb            [proposed]
+│   ├── galaxy_spectra_redshift.ipynb
+│   ├── hubble_law.ipynb
+│   ├── galaxy_rotation_curves.ipynb
+│   ├── galaxy_color_magnitude.ipynb
 │   │
 │   │── Module 3: Galaxy populations
 │   ├── stellar_mass_function.ipynb
-│   ├── luminosity_function.ipynb               [proposed]
+│   ├── luminosity_function.ipynb
 │   │
 │   │── Module 4: Large-scale structure
 │   ├── angular_power_spectrum.ipynb
-│   ├── two_point_correlation.ipynb             [proposed]
+│   ├── two_point_correlation.ipynb
 │   │
 │   └── Module 5: Multi-wavelength & advanced
 │       ├── xray-galaxy-cross-correlation.ipynb
-│       ├── photometric_redshifts.ipynb         [proposed]
-│       └── cosmic_microwave_background.ipynb   [proposed]
+│       ├── photometric_redshifts.ipynb
+│       └── cosmic_microwave_background.ipynb
 │
 └── notebooks_evaluated/    ← pre-executed notebooks with all outputs
     ├── file_formats_formats.ipynb
@@ -214,10 +205,17 @@ tuto_stage/
     ├── stellar_luminosity_mass.ipynb
     ├── stellar_mass_function.ipynb
     ├── angular_power_spectrum.ipynb
-    └── xray-galaxy-cross-correlation.ipynb
+    ├── xray-galaxy-cross-correlation.ipynb
+    ├── blackbody_stellar_colors.ipynb
+    ├── galaxy_spectra_redshift.ipynb
+    ├── hubble_law.ipynb
+    ├── galaxy_rotation_curves.ipynb
+    ├── galaxy_color_magnitude.ipynb
+    ├── luminosity_function.ipynb
+    ├── two_point_correlation.ipynb
+    ├── photometric_redshifts.ipynb
+    └── cosmic_microwave_background.ipynb
 ```
-
-Notebooks marked `[proposed]` are planned and may be added progressively.
 
 The `notebooks_evaluated/` folder contains fully executed versions of all existing notebooks, generated by running each notebook end-to-end with no errors. They serve as a reference showing expected outputs and figures before an intern runs the notebooks themselves. They are generated with:
 
@@ -228,7 +226,7 @@ jupyter nbconvert --to notebook --execute --allow-errors \
   notebooks/<name>.ipynb
 ```
 
-Each notebook requires its specific environment (see Section 3.4).
+All notebooks run in the single `tuto_stage` environment. The three research notebooks (N09, N11, N13) additionally require the local packages installed in Section 3.3.
 
 ---
 
@@ -288,7 +286,7 @@ These two notebooks are the entry point for every intern. Do them first, in orde
 ---
 
 #### N03 · `blackbody_stellar_colors.ipynb` — Blackbody Radiation and Stellar Colors
-**Status:** proposed  
+**Status:** complete  
 **Level:** introductory–intermediate | **Time:** 2–3 h
 
 **Learning objectives**
@@ -340,7 +338,7 @@ main-sequence mass  L / L☉ ≈ (M / M☉)^4   [solar-type stars]
 ---
 
 #### N05 · `galaxy_spectra_redshift.ipynb` — Galaxy Spectra and Redshift Measurement
-**Status:** proposed  
+**Status:** complete  
 **Level:** intermediate | **Time:** 3 h
 
 **Learning objectives**
@@ -359,7 +357,7 @@ main-sequence mass  L / L☉ ≈ (M / M☉)^4   [solar-type stars]
 ---
 
 #### N06 · `hubble_law.ipynb` — Hubble's Law and the Expanding Universe
-**Status:** proposed  
+**Status:** complete  
 **Level:** intermediate | **Time:** 3 h
 
 **Learning objectives**
@@ -378,7 +376,7 @@ main-sequence mass  L / L☉ ≈ (M / M☉)^4   [solar-type stars]
 ---
 
 #### N07 · `galaxy_rotation_curves.ipynb` — Galaxy Rotation Curves and Dark Matter
-**Status:** proposed  
+**Status:** complete  
 **Level:** intermediate | **Time:** 3–4 h
 
 **Learning objectives**
@@ -397,7 +395,7 @@ main-sequence mass  L / L☉ ≈ (M / M☉)^4   [solar-type stars]
 ---
 
 #### N08 · `galaxy_color_magnitude.ipynb` — The Galaxy Color–Magnitude Diagram
-**Status:** proposed  
+**Status:** complete  
 **Level:** intermediate | **Time:** 2–3 h
 
 **Learning objectives**
@@ -439,7 +437,7 @@ main-sequence mass  L / L☉ ≈ (M / M☉)^4   [solar-type stars]
 ---
 
 #### N10 · `luminosity_function.ipynb` — The Galaxy Luminosity Function
-**Status:** proposed  
+**Status:** complete  
 **Level:** intermediate–advanced | **Time:** 3–4 h
 
 **Learning objectives**
@@ -481,7 +479,7 @@ main-sequence mass  L / L☉ ≈ (M / M☉)^4   [solar-type stars]
 ---
 
 #### N12 · `two_point_correlation.ipynb` — The 3D Two-Point Correlation Function
-**Status:** proposed  
+**Status:** complete  
 **Level:** advanced | **Time:** 4–5 h
 
 **Learning objectives**
@@ -523,7 +521,7 @@ main-sequence mass  L / L☉ ≈ (M / M☉)^4   [solar-type stars]
 ---
 
 #### N14 · `photometric_redshifts.ipynb` — Photometric Redshifts
-**Status:** proposed  
+**Status:** complete  
 **Level:** advanced | **Time:** 4 h
 
 **Learning objectives**
@@ -542,7 +540,7 @@ main-sequence mass  L / L☉ ≈ (M / M☉)^4   [solar-type stars]
 ---
 
 #### N15 · `cosmic_microwave_background.ipynb` — The Cosmic Microwave Background
-**Status:** proposed  
+**Status:** complete  
 **Level:** advanced | **Time:** 4–5 h
 
 **Learning objectives**
@@ -640,11 +638,7 @@ zenodo_get 15111974
 
 ### Downloading Planck CMB maps (N15)
 
-```bash
-# Download the SMICA CMB map (Commander is also fine)
-wget https://pla.esac.esa.int/pla/aio/product-action?COSMOLOGY.FILE_ID=COM_CMB_IQU-smica_2048_R3.00_full.fits \
-     -O planck_cmb_smica_2048.fits
-```
+Browse to the [Planck Legacy Archive](https://pla.esac.esa.int/) and download the SMICA (or Commander) CMB temperature map. The recommended file is `COM_CMB_IQU-smica_2048_R3.00_full.fits` (~500 MB), available under Products → CMB maps.
 
 ---
 
@@ -667,14 +661,7 @@ pip install <package>
 
 ### ImportError for a local package (sum_stat, hod_mod, gga_model)
 
-These packages are not on PyPI or conda-forge. You must clone their repositories and install them manually:
-
-```bash
-mamba activate tuto_stage
-pip install -e /path/to/package   # editable install
-```
-
-Ask your supervisor for access to the repositories.
+These packages are not on PyPI. Follow the instructions in Section 3.3 to install them with `pip install -e`. Ask your supervisor for the source paths.
 
 ### Jupyter kernel not found / wrong Python version
 

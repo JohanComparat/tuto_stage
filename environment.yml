@@ -1,7 +1,20 @@
 name: tuto_stage
 
-# Use conda-forge exclusively.
-# Mixing conda-forge and defaults causes solver conflicts.
+# Single unified environment covering all tutorials (N01–N15) and the
+# research notebooks. Merges the former sum_stat, hod_mod, gga_model envs.
+#
+# Install:
+#   mamba env create -f environment.yml
+#   mamba activate tuto_stage
+#
+# Then build pymaster (needs cfitsio/fftw/gsl from conda above):
+#   LDFLAGS="-L$CONDA_PREFIX/lib" CFLAGS="-I$CONDA_PREFIX/include" pip install pymaster
+#
+# Then install local research packages:
+#   pip install -e /path/to/sum_stat
+#   pip install -e /path/to/hod_mod
+#   pip install -e /path/to/gga_model
+
 channels:
   - conda-forge
 
@@ -13,30 +26,89 @@ dependencies:
   - scipy
   - matplotlib
   - pandas
+  - numba              # JIT compilation for performance-critical loops
 
-  # ── Astronomy ─────────────────────────────────────────────────────────────
+  # ── Astronomy (conda-forge builds available for Python 3.11) ─────────────
   - astropy>=6.0      # tables, units, coordinates, FITS, cosmology
   - astroquery        # online queries: Gaia, SDSS, NED, VizieR, SIMBAD
   - healpy            # HEALPix pixelisation of the sphere
-  - specutils         # read and analyse spectra (N05)
-  - photutils         # aperture photometry utilities (N03, N08)
-
-  # ── File formats ──────────────────────────────────────────────────────────
-  - h5py              # HDF5 read/write (N01)
+  - specutils         # spectral analysis
+  - photutils         # aperture photometry
+  - h5py              # HDF5
+  - pyyaml            # YAML config files
 
   # ── Statistics & fitting ──────────────────────────────────────────────────
-  - scikit-learn      # clustering, PCA, photo-z (N14)
+  - scikit-learn      # ML: PCA, k-NN, random forests, photo-z
   - emcee             # MCMC ensemble sampler
   - corner            # corner plots for MCMC posteriors
 
-  # ── Large-scale structure ─────────────────────────────────────────────────
-  # Corrfunc is pre-compiled on conda-forge; no local C compiler required.
-  - Corrfunc          # fast pair-count 2-point correlation functions (N12)
+  # ── Large-scale structure (compiled; no local C compiler required) ─────────
+  - Corrfunc          # fast pair-count 2-point correlation functions
+
+  # ── JAX ecosystem (CPU by default) ────────────────────────────────────────
+  # For GPU support replace jaxlib with jaxlib-cuda12-pip (via pip).
+  - jax
+  - jaxlib
+  - optax             # gradient-based optimizers for JAX
+  - equinox           # JAX neural networks / pytrees
+
+  # ── C libraries required to build pymaster (below) ───────────────────────
+  - cfitsio            # FITS I/O library
+  - fftw               # Fast Fourier Transform library
+  - gsl                # GNU Scientific Library
 
   # ── Jupyter ───────────────────────────────────────────────────────────────
   - jupyterlab>=4.0
-  - jupyter           # also installs classic notebook interface
+  - jupyter
   - ipykernel         # register this env as a Jupyter kernel
-  - ipywidgets        # interactive widgets
-  - ipympl            # %matplotlib widget backend for zoomable plots
-  - tqdm              # progress bars
+  - ipywidgets
+  - ipympl            # %matplotlib widget backend
+  - ipython
+  - tqdm
+
+  # ── pip packages ─────────────────────────────────────────────────────────
+  # The packages below are not available on conda-forge for Python 3.11.
+  # All have pre-built wheels on PyPI (no local compiler needed).
+  - pip
+  - pip:
+    # ── Cosmology & Boltzmann codes ────────────────────────────────────────
+    - camb            # CAMB linear power spectrum (Lewis & Challinor 2002)
+    - classy          # CLASS Boltzmann solver (Lesgourgues 2011)
+    - pyccl           # Core Cosmology Library: 2-pt statistics, halo model
+    - colossus        # halo mass functions, concentration–mass relations
+    - halomod         # halo model framework
+
+    # ── 2-point statistics ─────────────────────────────────────────────────
+    - treecorr        # 2-point correlation functions (Jarvis 2015)
+
+    # ── Power spectrum ─────────────────────────────────────────────────────
+    # NaMaster: pseudo-Cl power spectrum estimator.
+    # Requires cfitsio + fftw + gsl from conda (above).
+    # Install with the explicit flag once conda packages are in place:
+    #   LDFLAGS="-L$CONDA_PREFIX/lib" CFLAGS="-I$CONDA_PREFIX/include" pip install pymaster
+    - pymaster
+
+    # ── Lensing & galaxy catalogues ────────────────────────────────────────
+    - dsigma          # Delta-Sigma weak lensing estimator
+    - pymangle        # Mangle polygon mask reader
+
+    # ── Dust & extinction ─────────────────────────────────────────────────
+    - dustmaps        # 3D dust maps: Schlegel, Planck, Bayestar
+    - extinction      # reddening curves: Cardelli, Fitzpatrick, …
+
+    # ── Sampling ──────────────────────────────────────────────────────────
+    - ultranest        # nested sampling / Bayesian evidence
+
+    # ── Mock observations ─────────────────────────────────────────────────
+    - pyxsim          # mock X-ray photon lists from simulations
+    - yt              # simulation analysis framework (pyxsim dependency)
+
+    # ── Other tools ──────────────────────────────────────────────────────
+    - glass            # Gaussian lensing and simulation suite
+    - AletheiaCosmo    # non-linear P(k) emulator (Sanchez 2025)
+    - pyfnntw          # fast fringe nearest-neighbour tree (Rust wheel)
+    - plotdigitizer    # interactive figure digitizer
+
+    # ── Optional: experimental emulators (require git access) ─────────────
+    # - git+https://github.com/czymh/csstemu
+    # - git+https://github.com/DelonShen/aemulusnu_hmf
