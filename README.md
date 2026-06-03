@@ -272,13 +272,12 @@ These two notebooks are the entry point for every intern. Do them first, in orde
 3. Understand parallax and proper motion from Gaia astrometry.
 4. Visualise star positions in multiple sky projections.
 5. Build a stellar density map with HEALPix pixelisation.
-6. Read a Hertzsprung–Russell diagram directly from Gaia photometry.
 
 **Prerequisites:** N01  
 **Packages:** `astropy`, `healpy`, `matplotlib`, `numpy`  
 **Data:** Gaia DR2 (bundled subsample)
 
-**Key concepts:** RA/Dec, Galactic latitude/longitude, parallax, proper motion, HEALPix, colour–magnitude diagram
+**Key concepts:** RA/Dec, Galactic latitude/longitude, parallax, proper motion, HEALPix
 
 ---
 
