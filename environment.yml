@@ -103,6 +103,10 @@ dependencies:
     - pyxsim          # mock X-ray photon lists from simulations
     - yt              # simulation analysis framework (pyxsim dependency)
 
+    # ── Spectral fitting ─────────────────────────────────────────────────
+    - ppxf             # Penalized Pixel-Fitting (Cappellari & Emsellem 2004)
+    - eazy-py          # Photometric redshift fitting (Brammer et al. 2008)
+
     # ── Other tools ──────────────────────────────────────────────────────
     - glass            # Gaussian lensing and simulation suite
     - AletheiaCosmo    # non-linear P(k) emulator (Sanchez 2025)
