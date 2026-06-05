@@ -100,6 +100,7 @@ dependencies:
     - ultranest        # nested sampling / Bayesian evidence
 
     # ── Mock observations ─────────────────────────────────────────────────
+    - galsim          # galaxy image simulator (Rowe et al. 2015)
     - pyxsim          # mock X-ray photon lists from simulations
     - yt              # simulation analysis framework (pyxsim dependency)
 
