@@ -9,7 +9,7 @@ A self-contained set of Jupyter notebooks covering astronomy, astrophysics, and 
 
 1. [Who is this for?](#1-who-is-this-for)
 2. [Prerequisites](#2-prerequisites)
-3. [Environment setup](#3-environment-setup)
+3. [Environment setup](#3-environment-setup) — full (`tuto_stage`) and minimal (`pycl`)
 4. [Repository structure](#4-repository-structure)
 5. [Full notebook catalog](#5-full-notebook-catalog)
 6. [Suggested learning paths](#6-suggested-learning-paths)
@@ -159,6 +159,45 @@ mamba env remove -n tuto_stage
 mamba env create -f environment.yml
 ```
 
+### 3.8 Minimal environment for the angular power spectrum notebook (`pycl`)
+
+The notebook `notebooks_evaluated/angular_power_spectrum.ipynb` (BGS angular power spectrum with NaMaster + More+2015 HOD) can also run in a lean, self-contained environment called `pycl`. It contains only the packages that notebook actually requires — about half the size of `tuto_stage` — making it easier to reproduce on a fresh Ubuntu machine.
+
+**Step 1 — create the environment:**
+
+```bash
+mamba env create -f environment_pycl.yml
+mamba activate pycl
+```
+
+**Step 2 — install local research packages** (point to the actual paths on your machine):
+
+```bash
+pip install -e /path/to/sum_stat
+pip install -e /path/to/hod_mod
+```
+
+**Step 3 — pymaster source-build fallback** (only needed if the PyPI manylinux wheel fails, which is rare on Ubuntu x86_64):
+
+```bash
+LDFLAGS="-L$CONDA_PREFIX/lib" CFLAGS="-I$CONDA_PREFIX/include" \
+  pip install --force-reinstall pymaster
+```
+
+**Step 4 — register as a Jupyter kernel:**
+
+```bash
+python -m ipykernel install --user --name pycl --display-name "pycl"
+```
+
+**Step 5 — smoke-test:**
+
+```bash
+python -c "import pymaster, healpy, camb, jax; print('OK')"
+```
+
+After these steps, open JupyterLab, select the **pycl** kernel, and run `notebooks_evaluated/angular_power_spectrum.ipynb` from top to bottom.
+
 ---
 
 ## 4. Repository structure
@@ -166,7 +205,8 @@ mamba env create -f environment.yml
 ```
 tuto_stage/
 ├── README.md               ← this file
-├── environment.yml         ← mamba environment specification
+├── environment.yml         ← full mamba environment (all tutorials)
+├── environment_pycl.yml    ← minimal environment for angular_power_spectrum.ipynb
 ├── notebooks/              ← source notebooks (edit these)
 │   │
 │   │── Module 0: Tools
