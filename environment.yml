@@ -101,6 +101,7 @@ dependencies:
 
     # ── Mock observations ─────────────────────────────────────────────────
     - galsim          # galaxy image simulator (Rowe et al. 2015)
+    - hdf5plugin      # blosc2/lz4 decompression for CAMELS HDF5 snapshots
     - pyxsim          # mock X-ray photon lists from simulations
     - yt              # simulation analysis framework (pyxsim dependency)
 

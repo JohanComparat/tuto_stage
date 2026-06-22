@@ -1,0 +1,79 @@
+name: pycl
+
+# Minimal environment for notebooks_evaluated/angular_power_spectrum.ipynb
+# (BGS angular power spectrum: NaMaster pseudo-Cl + More+2015 HOD model)
+#
+# Install:
+#   mamba env create -f environment_pycl.yml
+#   mamba activate pycl
+#
+#   # If pymaster manylinux wheel is unavailable (source build fallback):
+#   LDFLAGS="-L$CONDA_PREFIX/lib" CFLAGS="-I$CONDA_PREFIX/include" \
+#     pip install --force-reinstall pymaster
+#
+#   # Install the two local research packages in editable mode:
+#   pip install -e /path/to/sum_stat
+#   pip install -e /path/to/hod_mod
+#
+#   # Register as a Jupyter kernel:
+#   python -m ipykernel install --user --name pycl --display-name "pycl"
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.11
+
+  # ── Core scientific stack ─────────────────────────────────────────────────
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+
+  # ── Astronomy ─────────────────────────────────────────────────────────────
+  - astropy>=6.0        # FITS I/O, units, FlatLambdaCDM cosmology
+  - healpy              # HEALPix sphere pixelisation
+  - h5py                # HDF5 data files
+  - pyyaml              # YAML config files (hod_mod internal use)
+
+  # ── Statistics & fitting ──────────────────────────────────────────────────
+  - scikit-learn        # required by sum_stat
+  - emcee               # required by hod_mod
+
+  # ── Large-scale structure ─────────────────────────────────────────────────
+  - Corrfunc            # fast pair-count 2-point functions (sum_stat)
+
+  # ── JAX ecosystem (CPU) ───────────────────────────────────────────────────
+  - jax
+  - jaxlib
+
+  # ── Native C libraries needed if pymaster is built from source ───────────
+  # On Ubuntu x86_64 the PyPI manylinux wheel usually makes this unnecessary,
+  # but keeping them here ensures the source-build fallback always works.
+  - cfitsio
+  - fftw
+  - gsl
+
+  # ── Jupyter ───────────────────────────────────────────────────────────────
+  - jupyterlab>=4.0
+  - ipykernel           # register this env as a Jupyter kernel
+  - ipython
+  - tqdm
+
+  # ── pip packages ─────────────────────────────────────────────────────────
+  - pip
+  - pip:
+    # Boltzmann / cosmology codes (hod_mod dependencies)
+    - camb              # linear power spectrum (Lewis & Challinor 2002)
+    - classy            # CLASS Boltzmann solver (Lesgourgues 2011)
+    - colossus          # halo mass functions, concentration–mass relations
+    - AletheiaCosmo     # non-linear P(k) emulator (hod_mod dependency)
+
+    # 2-point statistics (sum_stat dependency)
+    - treecorr          # angular w(theta) measurements (Jarvis 2015)
+
+    # Angular power spectrum estimator — the central tool of this notebook.
+    # A manylinux wheel is available on PyPI for Linux x86_64; if pip falls
+    # back to a source build, the cfitsio/fftw/gsl conda packages above
+    # provide the required headers and libraries.
+    - pymaster
