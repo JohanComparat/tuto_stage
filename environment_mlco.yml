@@ -1,0 +1,56 @@
+name: mlco
+
+# Environment for the PhD-onboarding notebooks (N07-N13): multi-wavelength
+# large-scale-structure cosmology and differentiable inference.
+#
+# Install:
+#   mamba env create -f environment_mlco.yml
+#   mamba activate mlco
+#
+# The JAX stack (jax, numpyro, blackjax) and glass are installed via pip as
+# CPU-only builds: the notebooks need no GPU, and this keeps the conda solve
+# small and fast (the conda-forge `jax` pulls an unnecessary multi-GB CUDA stack).
+#
+# Used by: linear_power_spectrum_growth, density_field_to_galaxy_map,
+#          weak_lensing_cosmic_shear, sunyaev_zeldovich_effect,
+#          xray_hot_gas_emission, multiprobe_nx2pt_fisher,
+#          differentiable_inference_hmc.
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.11
+
+  # Core scientific stack
+  - numpy
+  - scipy
+  - matplotlib
+  - astropy>=6.0
+  - healpy            # spherical maps (synfast/anafast) for lensing & SZ
+  - h5py
+  - tqdm
+
+  # Cosmology theory (good conda-forge builds; avoid pip source compilation)
+  - pyccl             # CCL: P(k), growth, lensing/cluster observables
+  - camb              # linear P(k), transfer function, growth
+
+  # Posterior visualisation
+  - getdist
+  - corner
+
+  # Jupyter / execution
+  - jupyter
+  - jupyterlab
+  - nbconvert         # execute notebooks -> notebooks_evaluated/
+  - nbformat
+  - ipykernel
+
+  - pip
+  - pip:
+    - "jax[cpu]"      # autodiff, CPU-only build
+    - numpyro         # NUTS/HMC over JAX
+    - blackjax        # HMC + micro-canonical (MCLMC) samplers
+    # GLASS: Tessore et al. 2023 (arXiv:2302.01942) - lognormal matter shells
+    # and iterative line-of-sight weak-lensing fields.
+    - glass
