@@ -1,5 +1,5 @@
-# Astronomy & Astrophysics Tutorials for Bachelor Interns
-### Université Grenoble Alpes — Stage License
+# Astronomy & Astrophysics Tutorials for Interns
+### Université Grenoble Alpes — Stages
 
 A self-contained set of Jupyter notebooks covering astronomy, astrophysics, and cosmology through hands-on work with real observational data. Each notebook is designed for a bachelor-level intern with no prior astronomy experience but a solid background in mathematics and classical physics.
 
