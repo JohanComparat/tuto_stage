@@ -1,0 +1,17 @@
+# Illustrative thermal-SZ compensated-aperture-photometry (CAP) profile for BOSS CMASS,
+# APPROXIMATING Schaan et al. 2021 (arXiv:2009.05557) Fig. 8 at 150 GHz (ACT f150).
+# *** NOT the official measurement. *** The Schaan/Amodeo 2021 papers release NO numerical data
+# table (values live only in the figures); exact numbers require re-running the public ThumbStack
+# pipeline (github.com/EmmanuelSchaan/ThumbStack) on ACT DR5 + BOSS DR12. These points are the
+# OUTPUT of this notebook's own full forward model (vendored Battaglia-2012 pressure -> LOS
+# projection -> ACT beam -> CAP) plus fixed-seed Gaussian noise, tuned to the published shape and
+# total S/N ~ 11. They therefore illustrate a measurement that the full model reproduces; the real
+# CMASS data prefer ~0.5-0.6x this thermal pressure (feedback; Amodeo+2021) -- see Exercise 6.
+# total model S/N = 13.0 ; chi2(data,model) = 3.4 for 6 points
+# theta_d[arcmin],T_tSZ_150[muK arcmin^2],sigma[muK arcmin^2]
+1.0000,-1.2091,0.5457
+2.0000,-5.2683,0.9944
+3.0000,-6.0467,1.2576
+4.0000,-9.5974,1.4700
+5.0000,-8.4259,1.6927
+6.0000,-10.7743,1.9825

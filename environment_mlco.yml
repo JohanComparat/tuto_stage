@@ -14,7 +14,7 @@ name: mlco
 # Used by: linear_power_spectrum_growth, density_field_to_galaxy_map,
 #          weak_lensing_cosmic_shear, sunyaev_zeldovich_effect,
 #          xray_hot_gas_emission, multiprobe_nx2pt_fisher,
-#          differentiable_inference_hmc.
+#          differentiable_inference_hmc, sz_actxdesi_bgs_measurement.
 
 channels:
   - conda-forge
@@ -54,3 +54,6 @@ dependencies:
     # GLASS: Tessore et al. 2023 (arXiv:2302.01942) - lognormal matter shells
     # and iterative line-of-sight weak-lensing fields.
     - glass
+    # ACT DR6 x DESI stacked-tSZ notebook (sz_actxdesi_bgs_measurement):
+    - pixell            # ACT CAR sky maps: read, reproject, thumbnails/cutouts
+    - astroquery        # VizieR cone search for the NVSS radio catalogue

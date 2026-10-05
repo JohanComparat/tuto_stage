@@ -95,6 +95,7 @@ dependencies:
     # ── Dust & extinction ─────────────────────────────────────────────────
     - dustmaps        # 3D dust maps: Schlegel, Planck, Bayestar
     - extinction      # reddening curves: Cardelli, Fitzpatrick, …
+    - dust_extinction # astropy-model extinction curves (CCM89, F99) — used in N05
 
     # ── Sampling ──────────────────────────────────────────────────────────
     - ultranest        # nested sampling / Bayesian evidence

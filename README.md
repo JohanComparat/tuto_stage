@@ -245,6 +245,8 @@ tuto_stage/
 │       ├── density_field_to_galaxy_map.ipynb        (N08)
 │       ├── weak_lensing_cosmic_shear.ipynb          (N09)
 │       ├── sunyaev_zeldovich_effect.ipynb           (N10)
+│       ├── sunyaev_zeldovich_prediction.ipynb       (N10b · deep-dive + ACT×CMASS reproduction)
+│       ├── sz_actxdesi_bgs_measurement.ipynb        (N10c · DESI BGS × ACT DR6 stacked-tSZ measurement)
 │       ├── xray_hot_gas_emission.ipynb              (N11)
 │       ├── multiprobe_nx2pt_fisher.ipynb            (N12)
 │       └── differentiable_inference_hmc.ipynb       (N13)
@@ -457,6 +459,26 @@ degeneracy.
 Compton-$y$, the tSZ spectral null at 217 GHz, the Arnaud (2010) GNFW pressure profile, and a projected
 $y(\theta)$ map; the $Y$–$M$ slope $5/3$ recovered by autodiff.
 **References:** Sunyaev & Zel'dovich (1972) CoASP 4, 173; Arnaud et al. (2010) A&A 517, A92; Carlstrom et al. (2002) ARA&A 40, 643; Komatsu & Seljak (2002) MNRAS 336, 1256.
+
+#### N10b · `sunyaev_zeldovich_prediction.ipynb` — Predicting the tSZ, from one equation to a real measurement
+**Packages:** `numpy`, `scipy`, `astropy`, `jax` | **Data:** vendored public model inputs in `notebooks/data/sz_cmass/` (see `PROVENANCE.md`)
+A deep-dive companion to N10: every equation gets a bachelor-level derivation, an order-of-magnitude box,
+and verified references. **Part 2** reviews recent tSZ measurements around clusters/groups/galaxies, then
+reproduces the ACT × BOSS CMASS stacked tSZ (Schaan & Amodeo 2021): the simple Arnaud model fails on
+group-scale halos, and a full forward model (Battaglia-2012 pressure → line-of-sight projection → ACT beam
+→ compensated aperture photometry) recovers the measurement.
+**References:** Schaan et al. (2021) PRD 103, 063513; Amodeo et al. (2021) PRD 103, 063514; Battaglia et al. (2012) ApJ 758, 75; Nagai et al. (2007) ApJ 668, 1.
+
+#### N10c · `sz_actxdesi_bgs_measurement.ipynb` — Measuring the tSZ around DESI BGS galaxies with ACT DR6
+**Packages:** `numpy`, `scipy`, `astropy`, `pixell`, `astroquery` | **Data:** public ACT DR6+Planck maps and DESI DR1 BGS catalogue, downloaded on first run into `notebooks/data/sz_actxdesi/cache/` (see `PROVENANCE.md`)
+A hands-on measurement companion to N10/N10b: a from-scratch **stacking** pipeline (sky cutouts →
+compensated aperture photometry → stacking → radial profiles → jackknife errors) applied to the **DESI DR1
+Bright Galaxy Sample** on the **ACT DR6** Compton-$y$ and 90/150/220 GHz maps. Reproduces, for BGS,
+the footprint, $n(z)$, stacked submaps, radial profiles, ILC-deprojection and 220 GHz dust tests, radio
+(NVSS) cleaning, the Compton-$y$–mass relation, and the $y$–$\tau$ optical-depth comparison to pairwise
+kSZ. A flexible data-query section starts the notebook; a `FULL_RUN` switch scales from a fast subsample to
+the full 1.6 M sample.
+**References:** Coulton et al. (2024) PRD 109, 063530; Naess et al. (2025) JCAP 2025, 061; Schaan et al. (2021) PRD 103, 063513; Liu et al. (2025) PRD 112, 083561; Battaglia (2016) JCAP 08, 058; Hadzhiyska et al. (2026) PRD 113, 063565; Siudek et al. (2024) A&A 691, A308.
 
 #### N11 · `xray_hot_gas_emission.ipynb` — X-ray emission from the hot gas in halos
 **Packages:** `astropy`, `jax` | **Data:** none (theory)
